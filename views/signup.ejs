@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+</head>
+<body>
+    <h1>Signup</h1>
+ 
+    <form action="/signup" method="POST">
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label" for="fname">username</label>
+                                    <input id="fname" class="input--style-4" type="text" name="userName" >
+                                    <div id="fnameError" class="validation-message"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-2"></div>
+
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label" for="fname">First Name</label>
+                                    <input id="fname" class="input--style-4" type="text" name="fName" >
+                                    <div id="fnameError" class="validation-message"></div>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label for="lname" class="label">Last Name</label>
+                                    <input id="lname" class="input--style-4" type="text" name="lName" >
+                                    <div id="lnameError" class="validation-message"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Birthday</label>
+                                    <div class="input-group-icon">
+                                        <input class="input--style-4 js-datepicker" type="date" name="birthday" >
+                                        <i class="zmdi zmdi-calendar-note input-icon js-btn-calendar"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Gender</label>
+                                    <div class="p-t-10">
+                                        <label class="radio-container m-r-45">Male
+                                            <input type="radio" checked="checked" name="gender" value="male">
+                                            <span class="checkmark"></span>
+                                        </label>
+                                        <label class="radio-container">Female
+                                            <input type="radio" name="gender" value="female">
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label for="email" class="label">Email</label>
+                                    <input id="email" class="input--style-4" type="email" name="email" >
+                                    <div id="emailError" class="validation-message"></div>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label for="mobile" class="label">Phone Number</label>
+                                    <input id="mobile" class="input--style-4" type="text" name="mobile" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label for="password" class="label">Password</label>
+                                    <input id="password" class="input--style-4" type="password" name="password" value="<%= oldInput.password %>" >
+                                    <div id="passError" class="validation-message"></div>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Confirm Password</label>
+                                    <input class="input--style-4" type="password" name="confirmPassword" >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-t-15">
+                            <button class="btn btn--radius-2 btn--green" type="submit">Sign UP</button>
+                        </div>
+                    </form>
+</body>
+</html>
