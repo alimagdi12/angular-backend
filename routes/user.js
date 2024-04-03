@@ -16,6 +16,11 @@ router.post('/cart',
 userController.postCart);
 
 
+router.post('/cart-delete',
+// isAuth,
+userController.postCartDeleteProduct
+)
+
 router.post('/create-order', 
 // isAuth, 
 userController.postOrder);

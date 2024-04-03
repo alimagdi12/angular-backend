@@ -32,7 +32,7 @@ exports.postContact=(req,res,next)=> {
         </ul>
     `
     });
-}
+};
 
 
 
@@ -49,6 +49,7 @@ exports.getCart = (req, res, next) => {
             .populate('cart.items.productId')
             .exec()
             .then(user => {
+                console.log(user);
                 if (!user) {
                     return res.status(404).json({ message: 'User not found' });
                 }
@@ -73,16 +74,13 @@ exports.getCart = (req, res, next) => {
 
 exports.postCart = (req, res, next) => {
     const token = req.header('jwt');
-    console.log("userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr" ,token);
     jwt.verify(token, 'your_secret_key', (err, decodedToken) => {
         if (err) {
         return res.status(401).json({ message: 'Invalid token' });
         }
-
         const userId = decodedToken.userId;
         console.log(`userId = ${userId}`);
         const prodId = req.body.productId;
-    console.log(userId);
         Product.findById(prodId)
         .then(product => {
             if (!product) {
@@ -113,16 +111,21 @@ exports.postCart = (req, res, next) => {
 };
 
 
+
 exports.postCartDeleteProduct = (req, res, next) => {
     const prodId = req.body.productId;
-    User
-    .removeFromCart(prodId)
+    User.findById(req.user._id)
+    .then(user => {
+        if (!user) {
+            return res.status(404).json({message: 'User not found'});
+        }
+        return user.removeFromCart(prodId);
+    })
     .then(result => {
-        res.redirect('/cart');
+        res.status(200).json({message:'Deleted from Cart', result});
     })
     .catch(err => console.log(err));
 };
-
 
 
 exports.postOrder = (req, res, next) => {
