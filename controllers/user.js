@@ -274,10 +274,22 @@ exports.postPayement = async (req, res) => {
             });
 
             res.json({ url: session.url });
-        } catch (err) {
-            console.error(err);
-            res.status(500).json({ message: 'Error processing payment' });
-        }
+            User.findById(decodedToken.userId)
+            .then(user=>{
+                if (!user) {
+                    return res.status(404).json({message: 'User not found'});
+                }
+                return user.clearCart();
+            })
+            .catch(err=>{
+                console.log(err);
+                res.status(400).json({msg:err})
+            })
+            
+            } catch (err) {
+                console.error(err);
+                res.status(500).json({ message: 'Error processing payment' });
+            }
     });
 };
 
