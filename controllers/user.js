@@ -111,20 +111,26 @@ exports.postCart = (req, res, next) => {
 };
 
 
-
 exports.postCartDeleteProduct = (req, res, next) => {
     const prodId = req.body.productId;
-    User.findById(req.user._id)
-    .then(user => {
-        if (!user) {
-            return res.status(404).json({message: 'User not found'});
+    let token= req.header('jwt')
+    jwt.verify(token, 'your_secret_key', (err, decodedToken) => {
+        if (err) {
+        return res.status(401).json({ message: 'Invalid token' });
         }
-        return user.removeFromCart(prodId);
+        User.findById(decodedToken.userId)
+        .then(user=>{
+            if (!user) {
+                return res.status(404).json({message: 'User not found'});
+            }
+            return user.removeFromCart(prodId);
+        })
+        .catch(err=>{
+            console.log(err);
+            res.status(400).json({msg:err})
+        })
     })
-    .then(result => {
-        res.status(200).json({message:'Deleted from Cart', result});
-    })
-    .catch(err => console.log(err));
+    
 };
 
 
