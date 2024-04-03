@@ -16,6 +16,18 @@ router.post('/cart',
 userController.postCart);
 
 
+router.post('/cart-add-quantity',
+// isAuth,
+userController.postIncreaseCart
+)
+
+
+router.post('/cart-decrease-quantity',
+// isAuth,
+userController.postDecreaseCart
+)
+
+
 router.post('/cart-delete',
 // isAuth,
 userController.postCartDeleteProduct

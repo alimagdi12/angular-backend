@@ -134,6 +134,45 @@ exports.postCartDeleteProduct = (req, res, next) => {
 };
 
 
+exports.postIncreaseCart = async (req, res, next) => {
+    const productId = req.body.productId; 
+    let token= req.header('jwt')
+    jwt.verify(token, 'your_secret_key', (err, decodedToken) => {
+        if (err) {
+        return res.status(401).json({ message: 'Invalid token' });
+        }
+        const user =  User.findById(decodedToken.userId)
+        .then(data=>{
+            return data.increaseQuantityInCart(productId) , res.status(200).json({ message: 'Quantity increased successfully' });
+        })
+        .catch(err=>{
+            console.log(err);
+            res.status(500).json({ msg:'Server error to upload quantity' })
+        })
+        
+    })
+};
+
+exports.postDecreaseCart = async (req, res, next) => {
+  const productId = req.body.productId; 
+    let token= req.header('jwt')
+    jwt.verify(token, 'your_secret_key', (err, decodedToken) => {
+        if (err) {
+        return res.status(401).json({ message: 'Invalid token' });
+        }
+        const user =  User.findById(decodedToken.userId)
+        .then(data=>{
+            return data.decreaseQuantityInCart(productId) , res.status(200).json({ message: 'Quantity decreased successfully' });
+        })
+        .catch(err=>{
+            console.log(err);
+            res.status(500).json({ msg:'Server error to upload quantity' })
+        })
+        
+    })
+};   
+
+
 exports.postOrder = (req, res, next) => {
     const token = req.cookies.token;
 
