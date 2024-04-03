@@ -245,6 +245,7 @@ exports.getOrders = (req, res, next) => {
 
 exports.postPayement = async (req, res) => {
     const token = req.header('jwt');
+    const totalPrice = req.body.totalPrice;
 
     jwt.verify(token, 'your_secret_key', async (err, decodedToken) => {
         if (err) {
@@ -253,12 +254,6 @@ exports.postPayement = async (req, res) => {
         const id = decodedToken.userId;
 
         try {
-            const orders = await Order.find({ 'user.userId': id });
-
-            const totalPrice = orders.reduce((acc, order) => {
-                return acc + order.totalPrice;
-            }, 0);
-
             const session = await stripe.checkout.sessions.create({
                 payment_method_types: ['card'],
                 line_items: [
