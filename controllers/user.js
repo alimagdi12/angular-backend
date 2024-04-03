@@ -174,7 +174,7 @@ exports.postDecreaseCart = async (req, res, next) => {
 
 
 exports.postOrder = (req, res, next) => {
-    const token = req.cookies.token;
+    const token = req.header('jwt');
 
     jwt.verify(token, 'your_secret_key', (err, decodedToken) => {
         if (err) {
@@ -196,8 +196,8 @@ exports.postOrder = (req, res, next) => {
             
             const order = new Order({
                 user: {
-                email: req.user.email,
-                userId: req.user
+                email: decodedToken.email,
+                userId: decodedToken.userId
                 },
                 products: products,
                 totalPrice: totalPrice // Add total price to the order
@@ -205,7 +205,7 @@ exports.postOrder = (req, res, next) => {
 
             return order.save()
                 .then(() => {
-                return req.user.clearCart();
+                return user.clearCart();
                 });
             })
             .then(() => {
@@ -243,30 +243,48 @@ exports.getOrders = (req, res, next) => {
 };
 
 
-exports.postPayement=async (req, res) => {
-    const  totalPrice  = req.body.totalPrice;  
+exports.postPayement = async (req, res) => {
+    const token = req.header('jwt');
 
-    const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items: [
-            {
-                price_data: {
-                    currency: 'usd',
-                    product_data: {
-                        name: 'Your Product Name',
+    jwt.verify(token, 'your_secret_key', async (err, decodedToken) => {
+        if (err) {
+            return res.status(401).json({ message: 'Invalid token' });
+        }
+        const id = decodedToken.userId;
+
+        try {
+            const orders = await Order.find({ 'user.userId': id });
+
+            const totalPrice = orders.reduce((acc, order) => {
+                return acc + order.totalPrice;
+            }, 0);
+
+            const session = await stripe.checkout.sessions.create({
+                payment_method_types: ['card'],
+                line_items: [
+                    {
+                        price_data: {
+                            currency: 'usd',
+                            product_data: {
+                                name: 'Your Product Name',
+                            },
+                            unit_amount: totalPrice * 100, // Stripe expects amount in cents
+                        },
+                        quantity: 1,
                     },
-                    unit_amount: totalPrice,
-                },
-                quantity: 1,
-            },
-        ],     
-    mode:'payment',
-    success_url: `${req.protocol}://${req.get('host')}/ckeckout-success?success=true`,
-    cancel_url: `${req.protocol}://${req.get('host')}/cart?canceled=true`,
+                ],
+                mode: 'payment',
+                success_url: `${req.protocol}://${req.get('host')}/checkout-success?success=true`,
+                cancel_url: `${req.protocol}://${req.get('host')}/cart?canceled=true`,
+            });
 
-});
-    res.send({ url: session.url });
-}
+            res.json({ url: session.url });
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: 'Error processing payment' });
+        }
+    });
+};
 
 
 

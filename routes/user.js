@@ -53,8 +53,9 @@ router.put('/updateUser',
 userController.postUpdateUser);
 
 
-router.put('/payement', 
+router.post('/payement', 
 // isAuth, 
+
 userController.postPayement);
 
 

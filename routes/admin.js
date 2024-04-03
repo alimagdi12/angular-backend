@@ -36,6 +36,10 @@ router.post(
 );
 
 
+router.post('/upload',
+  adminController.uploadImage
+)
+
 
 router.put(
   "/edit-product/:productId",
